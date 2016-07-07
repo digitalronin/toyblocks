@@ -1,24 +1,25 @@
 class Chain
-  attr_reader :blocks
+  attr_reader :block_headers
 
   def initialize
-    @blocks = []
+    @block_headers = []
   end
 
   def add_block(block)
-    blocks.push block
+    block_headers.push(block.header) if valid_add?(block)
   end
 
-  def valid?
-    list = blocks.dup
-    current  = list.shift
-    while list.any? do
-      next_block = list.shift
-      return false unless next_block.previous_block_hash == current.hash
-      current = next_block
-    end
-
-    true
+  def length
+    block_headers.length
   end
 
+  private
+
+  def valid_add?(block)
+    length == 0 || block.header.hash_prev_block == end_of_chain.hash
+  end
+
+  def end_of_chain
+    block_headers[-1]
+  end
 end

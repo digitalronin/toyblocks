@@ -1,32 +1,14 @@
 class Block
-  attr_reader :x_hash,
-              :magic_number,
+  attr_reader :magic_number,
               :size,
               :header,
               :transactions
 
   def initialize(params)
-    @transactions = []
-    @x_hash       = params.fetch(:x_hash)
-    @header       = BlockHeader.new(
-      timestamp:        Time.now.to_i,
-      hash_prev_block:  params.fetch(:hash_prev_block)
+    @header = BlockHeader.new(
+      x_hash:           params.fetch(:x_hash),
+      hash_prev_block:  params.fetch(:hash_prev_block),
+      timestamp:        params.fetch(:timestamp, Time.now.to_i),
     )
-  end
-
-  def hash
-    x_hash
-  end
-
-  def transaction_count
-    transactions.length
-  end
-
-  def previous_block_hash
-    header.hash_prev_block
-  end
-
-  def to_json
-    { hash: hash, previous_block: header.hash_prev_block }.to_json
   end
 end

@@ -2,37 +2,34 @@ require_relative 'spec_helper'
 
 describe Chain do
   subject(:chain) { described_class.new }
+  let(:block0) { Block.new(x_hash: "GENESIS", hash_prev_block: nil) }
+  let(:block1) { Block.new(x_hash: "B1", hash_prev_block: "GENESIS") }
+  let(:block2) { Block.new(x_hash: "B2", hash_prev_block: "B1") }
 
-  it "returns empty list of blocks" do
-    expect(chain.blocks).to eq([])
+  it "returns empty list of block headers" do
+    expect(chain.block_headers).to eq([])
   end
 
-  it "adds a block" do
-    chain.add_block "I am a block"
-    expect(chain.blocks).to eq(["I am a block"])
+  it "has length zero when empty" do
+    expect(chain.length).to eq(0)
   end
 
-  it "is valid when empty" do
-    expect(chain).to be_valid
+  it "adds a block, when empty" do
+    chain.add_block block0
+    expect(chain.block_headers).to eq([block0.header])
   end
 
-  it "is valid when there is a single block" do
-    chain.add_block "I am a block"
-    expect(chain).to be_valid
+  it "adds a block that points back to the end of the chain" do
+    chain.add_block block0
+    chain.add_block block1
+
+    expect(chain.block_headers).to eq([block0.header, block1.header])
   end
 
-  it "is valid when each block points to the previous block" do
-    chain.add_block Block.new(x_hash: "GENESIS", hash_prev_block: nil)
-    chain.add_block Block.new(x_hash: "SECOND",  hash_prev_block: "GENESIS")
+  it "doesn't add a block that doesn't point to the end of the chain" do
+    chain.add_block block0
+    chain.add_block block2
 
-    expect(chain).to be_valid
+    expect(chain.block_headers).to eq([block0.header])
   end
-
-  it "is invalid when a block doesn't point to the previous block" do
-    chain.add_block Block.new(x_hash: "GENESIS", hash_prev_block: nil)
-    chain.add_block Block.new(x_hash: "SECOND",  hash_prev_block: "WRONG")
-
-    expect(chain).to_not be_valid
-  end
-
 end
