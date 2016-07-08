@@ -15,7 +15,7 @@ describe Chain do
   end
 
   it "adds a block, when empty" do
-    chain.add_block block0
+    expect(chain.add_block block0).to be_truthy
     expect(chain.block_headers).to eq([block0.header])
   end
 
@@ -28,8 +28,15 @@ describe Chain do
 
   it "doesn't add a block that doesn't point to the end of the chain" do
     chain.add_block block0
-    chain.add_block block2
+    expect(chain.add_block block2).to be_falsy
 
     expect(chain.block_headers).to eq([block0.header])
+  end
+
+  it "duplicates safely" do
+    chain.add_block block0
+    duplicate = chain.dup
+    duplicate.block_headers.pop
+    expect(chain.length).to eq(1)
   end
 end

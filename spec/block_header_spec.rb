@@ -8,4 +8,8 @@ describe BlockHeader do
   specify { expect(header.hash).to eq("HASH") }
   specify { expect(header.hash_prev_block).to eq("PREV") }
   specify { expect(header.timestamp).to eq(timestamp) }
+
+  it "returns a hash" do
+    expect(header.to_h).to eq({hash: "HASH", hash_prev_block: "PREV"})
+  end
 end

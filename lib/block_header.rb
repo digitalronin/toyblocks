@@ -16,4 +16,8 @@ class BlockHeader
   def hash
     x_hash
   end
+
+  def to_h
+    { hash: hash, hash_prev_block: hash_prev_block }
+  end
 end

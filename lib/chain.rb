@@ -1,5 +1,5 @@
 class Chain
-  attr_reader :block_headers
+  attr_accessor :block_headers
 
   def initialize
     @block_headers = []
@@ -11,6 +11,12 @@ class Chain
 
   def length
     block_headers.length
+  end
+
+  def dup
+    obj = Chain.new
+    obj.block_headers = block_headers.dup
+    obj
   end
 
   private
